@@ -1,0 +1,95 @@
+{% extends 'starter-page.html' %}
+{% load static %}
+
+{% block title %}
+All Appointments
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <!-- Interactive Message Toasts -->
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+            {% for message in messages %}
+            <div class="toast align-items-center text-white
+                {% if message.tags == 'success' %}bg-success{% elif message.tags == 'warning' %}bg-warning text-dark
+                {% elif message.tags == 'error' or message.tags == 'danger' %}bg-danger
+                {% else %}bg-info{% endif %}
+                border-0 shadow-lg fade show mb-3"
+                role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body fw-semibold">
+                        {{ message }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Appointment Table Card -->
+    <div class="card shadow-lg border-0 rounded-4 mt-4">
+        <div class="card-header bg-primary text-white text-center py-3 rounded-top-4">
+            <h3 class="mb-0">List of Booked Appointments</h3>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-4">
+                Below is a list of all appointments currently booked in the system. You can manage them by editing or deleting as needed.
+            </p>
+
+            <div class="table-responsive">
+                <table class="table table-striped align-middle table-hover">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Date & Time</th>
+                            <th>Department</th>
+                            <th>Doctor</th>
+                            <th>Message</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for x in allappointments %}
+                        <tr>
+                            <td>{{ x.name }}</td>
+                            <td>{{ x.email }}</td>
+                            <td>{{ x.phone }}</td>
+                            <td>{{ x.datetime }}</td>
+                            <td>{{ x.department }}</td>
+                            <td>{{ x.doctor }}</td>
+                            <td>{{ x.message }}</td>
+                            <td class="text-center">
+                                <a href="/edit/{{x.id}}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+                                <a href="/delete/{{x.id}}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                No appointments found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Auto-Show Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        toastElList.map(function (toastEl) {
+            const toast = new bootstrap.Toast(toastEl, { delay: 4000 }); // auto-hide after 4s
+            toast.show();
+        });
+    });
+</script>
+{% endblock %}
